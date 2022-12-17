@@ -3,16 +3,14 @@
 #TODO @Zalk0 - @Gylfirst
 
 function rsvh() {
-    if [[ $# -eq 1 && $1=='-admin' ]]; then
-        echo "What's the pasword for admin?"
-
-    elif [[ $# -eq 3 && $1=='-connect' ]];then
-        echo "What's your password $3?"
-
-    elif [[ $# -eq 1 && $1=='-help' ]];then
+    if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
+        read -p "What's the pasword for admin?" admin_passwd
+    elif [ $# -eq 3 ] && [ "$1" = "-connect" ];then
+        read -p "What's your password $3?" user_passwd
+    elif [ $# -eq 1 ] && [ "$1" = "-help" ];then
         help
     else
-        error
+        syntax
     fi
 }
 
