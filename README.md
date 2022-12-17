@@ -4,6 +4,9 @@ Project of a virtual machines network (with the virtual machines being files) an
 
 ## List of Commands
 
+Here is a list of commands, which you can also display in a detailled version with the following command in the script.
+>rsvh -help
+
 ### Mode connect
 
 This mode will allow the user to connect to the machine with his username.
