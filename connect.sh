@@ -16,13 +16,13 @@ function rsvh() {
     fi
 }
 
-function error() {
-    echo -e "Correct syntax:\nrsvh -admin\nrsvh -connect machine_name user_name"
+function syntax() {
+    echo -e "Syntax:\n\trsvh -admin\n\trsvh -connect machine_name user_name"
 }
 
 function help() {
     echo -e "HELP for rsvh command\n------------------------"
-    echo -e "Syntax:\n\trsvh -admin\n\trsvh -connect machine_name user_name"
+    syntax
     echo -e "------------------------\nCommands for -connect"
     echo "who:"
     echo "rusers:"
