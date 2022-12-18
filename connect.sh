@@ -40,22 +40,36 @@ function help() {
     echo -e "HELP for rsvh command\n------------------------"
     syntax
     echo -e "------------------------\nCommands for -connect"
-    echo "who:"
-    echo "rusers:"
-    echo "host:"
-    echo "rconnect:"
-    echo "su:"
-    echo "passwd:"
-    echo "finger:"
+    echo "who: allow the user to display all the users connected on the machine, returning username, machine name, date and hour of connection"
+    echo "rusers: allow the user to display the connected users, returning username, machine name, date and hour of connection"
+    echo "rhost: allow the user to display the list of virtual machine connected to the network"
+    echo "rconnect: allow the user to connect to another virtual machine of the network"
+    echo "su: allow the user to change the current user"
+    echo "passwd: allow the user to change his password on the network"
+    echo "finger: allow the user to display his informations"
     echo -e "write: allow the user to send message to another user.\n\tSyntax: write user_name@machine_name message"
-    echo "exit:"
+    echo "exit: allow the user to quit the current virtual machine, returning on the precedent, or leaving the network"
     echo -e "------------------------\nCommands for -admin"
-    echo "host:"
-    echo "user:"
-    echo -e "wall: allow the admin to send a message to connected users/not connected users following the syntax:\n\twall message (for only connected users)\n\twall -n message (for all users)"
-    echo "afinger:"
+    echo "host: allow the administrator to add or remove a virtual machine in the network"
+    echo "user: allow the administrator to add or remove an user, edit his permitions, and set a password"
+    echo -e "wall: allow the administrator to send a message to connected users/not connected users following the syntax:\n\twall message (for only connected users)\n\twall -n message (for all users)"
+    echo "afinger: allow the administrator to edit the informations on a user"
 }
 
+function finger() {
+    #TODO @Gylfirst
+    file="./finger"
+    user_name
+}
+
+function rhost() {
+    file="./machines"
+    echo "List of connected machines in the network:"
+    while read ligne
+    do
+        echo $ligne
+    done < $file    
+}
 
 ## COMMANDE DE TEST
 # rsvh -admin
