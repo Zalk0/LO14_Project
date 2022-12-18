@@ -4,7 +4,7 @@
 
 function rsvh() {
     if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
-        read -sp "What's the pasword for admin?" admin_passwd
+        read -sp "What's the pasword for admin? " admin_passwd
         echo -e "\nThe admin password is: $admin_passwd"
     elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
         file="./machines"
@@ -22,7 +22,7 @@ function rsvh() {
         if [[ $compt -eq $len ]]; then
             echo "The specified machine doesn't exist."
         else
-            read -sp "What's your password $3?" user_passwd
+            read -sp "What's your password $3? " user_passwd
             echo -e "\nYour password is: $user_passwd"
         fi
     elif [ $# -eq 1 ] && [ "$1" = "-help" ]; then
@@ -57,9 +57,35 @@ function help() {
 }
 
 function finger() {
-    #TODO @Gylfirst
+    #TODO @Gylfirst - Il manque la façon de recup le user_name
     file="./finger"
-    user_name
+    user_name=$1
+    while read ligne
+    do
+        name=$(echo $ligne | cut -d' ' -f1 )
+        if [ "$name" = "$user_name" ]; then
+            echo $(echo $ligne | cut -d':' -f2 )
+        else 
+            echo "The user $name is not registered."
+        fi
+    done < $file    
+}
+
+function afinger() {
+    file="./finger"
+    read -p "Which user do you want to edit? " user_name
+    while read -r ligne
+    do
+        ((nb_tot_ligne++))
+        name=$(echo $ligne | cut -d' ' -f1 )
+        if [ "$name" = "$user_name" ]; then
+            echo -e "The information of $user_name is:\n$(echo $ligne | cut -d':' -f2)"
+            nb_ligne=$nb_tot_ligne
+        else 
+            echo "The user $name is not registered."
+        fi
+    done < $file
+    #TODO @Gylfirst - @zalk0 Il faut maintenant ajouter/réécrire les infos avec un read et à la bonne position
 }
 
 function rhost() {
@@ -71,9 +97,57 @@ function rhost() {
     done < $file    
 }
 
+function host() {
+    file="./machines"
+    cat $file
+    read -p "Do you want to remove or add a machine? " option
+    if [ "$option" = "remove" ]; then
+        read -p "What's the machine name? " machine_name
+        sed -i -r "/$machine_name\b/d" $file
+        echo "New file:"
+        cat $file
+    elif [ "$option" = "add" ]; then
+        read -p "What's the machine name? " machine_name
+        echo $machine_name >> $file
+    else
+        echo "Reply by 'add' or 'remove'!"
+    fi
+}
+
+function user() {
+    file="./users"
+    cat $file
+    echo "Reply by 'add', 'remove', 'edit' or 'setpwd'"
+    read -p "Do you want to remove, add, edit or set a password to an user? " option
+    read -p "What's the user name? " user_name
+    #TODO faire une vérif que le user existe bien (pour setpwd, edit, remove)
+    if [ "$option" = "remove" ]; then
+        sed -i -r "/^$user_name\b/d" $file
+    elif [ "$option" = "add" ]; then
+        echo $user_name >> $file
+    elif [ "$option" = "edit" ]; then
+        sed -i -r "^$user_name\b" $file
+        #TODO faire les edit de permisisons (modifier peut etre le setpwd)
+    elif [ "$option" = "setpwd" ]; then
+        read -p "What's the new pasword? " password
+        sed -i -r "s/^$user_name.*/$user_name:$password/" $file
+        echo "Password has been set correctly"
+    else
+        echo "Wrong syntax, reply by 'add', 'remove', 'edit' or 'setpwd'!"
+    fi
+    echo "New file:"
+    cat $file
+}
+
 ## COMMANDE DE TEST
 # rsvh -admin
 # rsvh -connect machine1 user
 # rsvh -connect machine2 user
 # rsvh -help
 # rsvh dzq
+# rhost
+# finger user
+# finger user1
+# afinger
+# host
+# user
