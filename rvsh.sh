@@ -28,10 +28,10 @@ function help() {
     echo "afinger: allow the administrator to edit the informations on a user"
 }
 
-
 if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
     read -sp "What's the pasword for admin? " admin_passwd
-    echo -e "\nThe admin password is: $admin_passwd"
+    admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
+    echo -e "\nThe hash of the admin password is: $admin_passwd"
 elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
     file="./machines"
     compt=0
@@ -49,7 +49,8 @@ elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
         echo "The specified machine doesn't exist."
     else
         read -sp "What's your password $3? " user_passwd
-        echo -e "\nYour password is: $user_passwd"
+        user_passwd=$(echo $user_passwd | sha256sum | cut -f1 -d ' ')
+        echo -e "\nThe hash of your password is: $user_passwd"
     fi
 elif [ $# -eq 1 ] && [ "$1" = "-help" ]; then
     help
