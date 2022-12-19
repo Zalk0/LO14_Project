@@ -14,9 +14,9 @@ function test_machine { #$1=machine
 	done < $file
 	len=$(wc -l $file | cut -d ' ' -f1)
 	if [[ $compt -eq $len ]]; then
-		return 0 #The machine doesn't exist
+		return 1 #The machine doesn't exist
 	else
-		return 1 #The machine exists
+		return 0 #The machine exists
 	fi
 }
 
@@ -35,51 +35,47 @@ function test_user { #$1=user
 	done < $file
 	len=$(wc -l $file | cut -d ' ' -f1)
 	if [[ $compt -eq $len ]]; then
-		return 0 #The user doesn't exist
+		return 2 #The user doesn't exist
 	else
-		return 1 #The user exists
+		return 0 #The user exists
 	fi
 }
 
 function test_user_access_machine { #$1=machine $2=user
-	test_user $2
-	if [[ $? == 1 ]]; then
-		machines=$(sed -n "$ligne"p $file | cut -d ':' -f2)
-		if [[ $(echo $machines | grep $1) == '' ]]; then
-			return 0 #The user doesn't have access to the machine
+	test_machine $1
+	if [[ $? == 0 ]]; then
+		test_user $2
+		if [[ $? == 0 ]]; then
+			machines=$(sed -n "$ligne"p $file | cut -d ':' -f2)
+			if [[ $(echo $machines | grep $1) == '' ]]; then
+				return 3 #The user doesn't have access to the machine
+			else
+				return 0 #The user has access to the machine
+			fi
 		else
-			return 1 #The user has access to the machine
+			return 2 #The user doesn't exist
 		fi
+	else
+		return 1 #The machine doesn't exist
 	fi
 }
 
 #First arg is a number calling the test associated
 
-if [[ $# != 0 ]]; then
-	if [[ $1 == 0 ]]; then #$1=0 $2=machine
-		if [[ $# == 2 ]]; then
+if [[ ($# == 2) || ($# == 3) ]]; then
+	case $1 in
+		0 )
 			test_machine $2
-			echo $?
-		else
-			echo "Incorrect number of args when calling verifications!"
-		fi
-	elif [[ $1 == 1 ]]; then #$1=1 $2=user
-		if [[ $# == 2 ]]; then
+			return $?;;
+		1 )
 			test_user $2
-			echo $?
-		else
-			echo "Incorrect number of args when calling verifications!"
-		fi
-	elif [[ $1 == 2 ]]; then #$1=2 $2=machine $3=user
-		if [[ $# == 3 ]]; then
+			return $?;;
+		2 )
 			test_user_access_machine $2 $3
-			echo $?
-		else
-			echo "Incorrect number of args when calling verifications!"
-		fi
-	else
-		echo "Incorrect first arg when calling verifications!"
-	fi
+			return $?;;
+		* )
+			echo "First arg unknown"
+	esac
 else
-	echo "Forgot arg when calling verifications!"
+	echo "Incorrect number of args when calling verifications!"
 fi

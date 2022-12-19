@@ -35,18 +35,19 @@ if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
 	admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
 	echo -e "\nThe hash of the admin password is: $admin_passwd"
 elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
-	
-	if [[ $compt -eq $len ]]; then
-		echo "The specified machine doesn't exist."
-	else
-		
-		if [[ $compt -eq $len ]]; then
+	source verifications.sh 2 $2 $3
+	case $? in
+		0 )
 			read -sp "What's your password $3? " user_passwd
 			user_passwd=$(echo $user_passwd | sha256sum | cut -f1 -d ' ')
-			echo -e "\nThe hash of your password is: $user_passwd"
-		fi
-		
-	fi
+			echo -e "\nThe hash of your password is: $user_passwd";;
+		1 )
+			echo "The machine doesn't exist";;
+		2 )
+			echo "The user doesn't exist";;
+		3 )
+			echo "This user doesn't have access to this machine"
+	esac
 elif [ $# -eq 1 ] && [ "$1" = "-help" ]; then
 	help
 else
