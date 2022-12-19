@@ -56,6 +56,29 @@ function help() {
     echo "afinger: allow the administrator to edit the informations on a user"
 }
 
+# USER FUNCTIONS
+
+function rhost() {
+    file="./machines"
+    echo "List of connected machines in the network:"
+    while read ligne
+    do
+        echo $ligne
+    done < $file    
+}
+
+function su() {
+    file="./users"
+    new_user=$1
+    if [[ $(cat $file | grep -c "$new_user") -eq 1 ]]; then
+        #TODO @Gylfirst trouver comment modif le prompt
+        (echo $PS1 | sed -r "s/\\u/$new_user/")
+        echo 'test $PS1'
+    else
+        echo "User not found"
+    fi    
+}
+
 function finger() {
     #TODO @Gylfirst - Il manque la façon de recup le user_name
     file="./finger"
@@ -71,31 +94,7 @@ function finger() {
     done < $file    
 }
 
-function afinger() {
-    file="./finger"
-    read -p "Which user do you want to edit? " user_name
-    while read -r ligne
-    do
-        ((nb_tot_ligne++))
-        name=$(echo $ligne | cut -d' ' -f1 )
-        if [ "$name" = "$user_name" ]; then
-            echo -e "The information of $user_name is:\n$(echo $ligne | cut -d':' -f2)"
-            nb_ligne=$nb_tot_ligne
-        else 
-            echo "The user $name is not registered."
-        fi
-    done < $file
-    #TODO @Gylfirst - @zalk0 Il faut maintenant ajouter/réécrire les infos avec un read et à la bonne position
-}
-
-function rhost() {
-    file="./machines"
-    echo "List of connected machines in the network:"
-    while read ligne
-    do
-        echo $ligne
-    done < $file    
-}
+# ADMIN FUNCTIONS
 
 function host() {
     file="./machines"
@@ -139,6 +138,28 @@ function user() {
     cat $file
 }
 
+function wall() {
+    #TODO
+    echo 'test'
+}
+
+function afinger() {
+    file="./finger"
+    read -p "Which user do you want to edit? " user_name
+    while read -r ligne
+    do
+        ((nb_tot_ligne++))
+        name=$(echo $ligne | cut -d' ' -f1 )
+        if [ "$name" = "$user_name" ]; then
+            echo -e "The information of $user_name is:\n$(echo $ligne | cut -d':' -f2)"
+            nb_ligne=$nb_tot_ligne
+        else 
+            echo "The user $name is not registered."
+        fi
+    done < $file
+    #TODO @Gylfirst - @zalk0 Il faut maintenant ajouter/réécrire les infos avec un read et à la bonne position
+}
+
 ## COMMANDE DE TEST
 # rsvh -admin
 # rsvh -connect machine1 user
@@ -151,3 +172,4 @@ function user() {
 # afinger
 # host
 # user
+su user1
