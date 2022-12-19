@@ -1,4 +1,4 @@
-user1:machine1,machine6
-user3:machine42,machine6
-user6:machine1,machine32
-user2:machine4
+user1::machine1,machine6
+user3::machine42,machine6
+user6::machine1,machine32
+user2::machine4

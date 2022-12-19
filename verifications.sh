@@ -46,7 +46,7 @@ function test_user_access_machine { #$1=machine $2=user
 	if [[ $? == 0 ]]; then
 		test_user $2
 		if [[ $? == 0 ]]; then
-			machines=$(sed -n "$ligne"p $file | cut -d ':' -f2)
+			machines=$(sed -n "$ligne"p $file | cut -d ':' -f3)
 			if [[ $(echo $machines | grep $1) == '' ]]; then
 				return 3 #The user doesn't have access to the machine
 			else
