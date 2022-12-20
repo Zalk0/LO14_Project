@@ -60,6 +60,16 @@ function test_user_access_machine { #$1=machine $2=user
 	fi
 }
 
+function test_pwd { #$1=user $2=password
+	test_user $1
+	pwd=$(sed -n "$ligne"p $file | cut -d ':' -f2)
+	if [[ "$pwd" == "$2" ]]; then
+		return 0 #The password is correct
+	else
+		return 4 #The password isn't correct
+	fi
+}
+
 #First arg is a number calling the test associated
 
 if [[ ($# == 2) || ($# == 3) ]]; then
@@ -72,6 +82,9 @@ if [[ ($# == 2) || ($# == 3) ]]; then
 			return $?;;
 		2 )
 			test_user_access_machine $2 $3
+			return $?;;
+		3 )
+			test_pwd $2 $3
 			return $?;;
 		* )
 			echo "First arg unknown"
