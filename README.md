@@ -28,9 +28,9 @@ Use this command:
 
 These will be the numbers returned by functions to indicate if it's ok or not.
 
-**0** No error
-**1** Invalid number of arguments or invalid arguments
-**2** The machine doesn't exist
-**3** The user doesn't exist
-**4** The user doesn't have access to the machine
-**5** The password isn't correct
+**0** No error  
+**1** Invalid number of arguments or invalid arguments  
+**2** The machine doesn't exist  
+**3** The user doesn't exist  
+**4** The user doesn't have access to the machine  
+**5** The password isn't correct  
