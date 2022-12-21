@@ -40,19 +40,21 @@ elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
 		0 )
 			read -sp "What's your password $3? " user_passwd
 			user_passwd=$(echo $user_passwd | sha256sum | cut -f1 -d ' ')
-			echo -e "\nThe hash of your password is: $user_passwd"
+			#echo -e "\nThe hash of your password is: $user_passwd"
 			source verifications.sh 3 $3 $user_passwd
 			case $? in
 				0 )
 					echo "The password is correct";;
-				4 )
+				5)
 					echo "The password isn't correct"
 			esac;;
 		1 )
-			echo "The machine doesn't exist";;
+			echo "Incorrect number of args when calling verifications!";;
 		2 )
-			echo "The user doesn't exist";;
+			echo "The machine doesn't exist";;
 		3 )
+			echo "The user doesn't exist";;
+		4 )
 			echo "This user doesn't have access to this machine"
 	esac
 elif [ $# -eq 1 ] && [ "$1" = "-help" ]; then
