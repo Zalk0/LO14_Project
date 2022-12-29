@@ -66,6 +66,15 @@ function test_pwd { #$1=user $2=password
 	return 0 #The password is correct
 }
 
+function test_pwd_admin { #$1=password
+	file="./admin"
+	pwd=$(sed -n 1p $file | cut -d ':' -f2)
+	if [[ "$pwd" != "$1" ]]; then
+		return 5 #The password isn't correct
+	fi
+	return 0 #The password is correct
+}
+
 #First arg is a number calling the test associated
 
 if [[ ($# < 2) || ($# > 3) ]]; then
@@ -83,6 +92,9 @@ case $1 in
 		return $?;;
 	3 )
 		test_pwd $2 $3
+		return $?;;
+	4 )
+		test_pwd_admin $2
 		return $?;;
 	* )
 		echo "First arg unknown"

@@ -28,12 +28,64 @@ function help() {
 	echo "afinger: allow the administrator to edit the informations on a user"
 }
 
+function prompt { #$1=mode $2=machine $3=user
+	if [[ $1 == "admin" ]]; then
+		while [[ true ]]; do
+			read -p $'\nroot@hostroot> ' cmd a1 a2 a3
+			case $cmd in
+				"afinger" )
+					;;
+				"exit" )
+					break;;
+				"finger" )
+					;;
+				"help" )
+					help;;
+				"host" )
+					;;
+				"passwd" )
+					;;
+				"rconnect" )
+					;;
+				"rhost" )
+					;;
+				"rusers" )
+					;;
+				"su" )
+					;;
+				"user" )
+					;;
+				"wall" )
+					;;
+				"who" )
+					;;
+				"write" )
+					;;
+				* )
+					help
+			esac
+		done
+	elif [[ $1 == "connect" ]]; then
+		echo not implemented
+	else
+		echo Syntax incorrect when calling prompt
+	fi
+}
+
+
 #Need to add usage of verifications.sh
 
 if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
 	read -sp "What's the pasword for admin? " admin_passwd
 	admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
-	echo -e "\nThe hash of the admin password is: $admin_passwd"
+	#echo -e "\nThe hash of the admin password is: $admin_passwd"
+	source verifications.sh 4 $admin_passwd
+	case $? in
+		0 )
+			prompt $(echo $1 | cut -f2 -d '-');;
+		5 )
+			echo "The password isn't correct"
+	esac
 elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
 	source verifications.sh 2 $2 $3
 	case $? in
@@ -44,7 +96,7 @@ elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
 			source verifications.sh 3 $3 $user_passwd
 			case $? in
 				0 )
-					echo "The password is correct";;
+					prompt $(echo $1 | cut -f2 -d '-');;
 				5)
 					echo "The password isn't correct"
 			esac;;
