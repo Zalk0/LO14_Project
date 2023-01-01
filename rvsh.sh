@@ -6,12 +6,12 @@
 col_green=$'\e[1;32m'
 col_default=$'\e[0m'
 
-function syntax() {
+function syntax {
 	echo -e "Syntax:\n\trsvh -admin\n\trsvh -connect machine_name user_name"
 }
 
 #Je pense qu'il faut faire un help pour rvsh (pour comment on se connecte) et un help pour les autres commandes une fois connecté
-function help() {
+function help {
 	echo -e "HELP for rsvh command\n------------------------"
 	syntax
 	echo -e "------------------------\nCommands for -connect"
@@ -31,67 +31,76 @@ function help() {
 	echo "afinger: allow the administrator to edit the informations on a user"
 }
 
+function connection {
+	file="./logs"
+	date=$(date)
+	terminal=$(tty)
+	echo $1-$2-$date-$terminal >> logs # machine-user-date-terminal
+}
+
 function prompt { #$1=mode $2=machine $3=user
 	if [[ $1 == "admin" ]]; then
+		connection $2 $3 
 		while [[ true ]]; do
 			read -p $'\n'"$col_green root@hostroot$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"afinger" )
-					source afinger.sh;;
+					source "./commands/afinger.sh";;
 				"exit" )
 					break;;
 				"finger" )
-					source finger.sh;;
+					source "./commands/finger.sh" $3;;
 				"help" )
 					help;;
 				"host" )
-					source host.sh;;
+					source "./commands/host.sh";;
 				"passwd" )
-					source passwd.sh;;
+					source "./commands/passwd.sh" $3;;
 				"rconnect" )
-					source rconnect.sh;;
+					source "./commands/rconnect.sh" $1 $3 $a1;;
 				"rhost" )
-					source rhost.sh;;
+					source "./commands/rhost.sh";;
 				"rusers" )
-					source rusers.sh;;
+					source "./commands/rusers.sh";;
 				"su" )
-					source su.sh;;
+					source "./commands/su.sh";;
 				"user" )
-					source user.sh;;
+					source "./commands/user.sh";;
 				"wall" )
-					source wall.sh;;
+					source "./commands/wall.sh";;
 				"who" )
-					source who.sh;;
+					source "./commands/who.sh" $2;;
 				"write" )
-					source write.sh;;
+					source "./commands/write.sh" $a1 $a2;;
 				* )
 					help
 			esac
 		done
 	elif [[ $1 == "connect" ]]; then
+		connection $2 $3
 		while [[ true ]]; do
 			read -p $'\n'"$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"exit" )
-					break;;
+					source "./commands/exit.sh" $3 $2;;
 				"finger" )
-					source finger.sh;;
+					source "./commands/finger.sh" $3;;
 				"help" )
 					help;;
 				"passwd" )
-					source passwd.sh;;
+					source "./commands/passwd.sh" $3;;
 				"rconnect" )
-					source rconnect.sh;;
+					source "./commands/rconnect.sh" $1 $3 $a1;;
 				"rhost" )
-					source rhost.sh;;
+					source "./commands/rhost.sh";;
 				"rusers" )
-					source rusers.sh;;
+					source "./commands/rusers.sh";;
 				"su" )
-					source su.sh;;
+					source "./commands/su.sh";;
 				"who" )
-					source who.sh;;
+					source "./commands/who.sh" $2;;
 				"write" )
-					source write.sh;;
+					source "./commands/write.sh" $a1 $a2;;
 				* )
 					help
 			esac
@@ -143,16 +152,3 @@ elif [ $# -eq 1 ] && [ "$1" = "-help" ]; then
 else
 	syntax
 fi
-
-## COMMANDE DE TEST
-# rsvh -admin
-# rsvh -connect machine1 user
-# rsvh -connect machine2 user
-# rsvh -help
-# rsvh dzq
-# rhost
-# finger user
-# finger user1
-# afinger
-# host
-# user

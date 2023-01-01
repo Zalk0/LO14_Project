@@ -2,7 +2,7 @@
 
 file="./users"
 cat $file
-user_name=$1 # trouver un moyen de recup le use_name de l'utilisateur en cours
+user_name=$1
 read -sp "Enter your old password: " old_pwd
 old_pwd=$(echo $old_pwd | sha256sum | cut -f1 -d ' ')
 source ./verifications.sh 3 $user_name $old_pwd
@@ -15,5 +15,4 @@ case $? in
 		echo "Your password has been modified.";;
 	5)
 		echo "The password isn't correct"
-		# retry ? ou annuler la commande passwd
 esac
