@@ -81,7 +81,7 @@ function prompt { #$1=mode $2=machine $3=user
 				"who" )
 					source "./commands/who.sh" $2;;
 				"write" )
-					source "./commands/write.sh" $a1 $a2;;
+					source "./commands/write.sh" $a1 $a2 $3 $2;;
 				* )
 					help
 			esac
@@ -115,7 +115,7 @@ function prompt { #$1=mode $2=machine $3=user
 				"who" )
 					source "./commands/who.sh" $2;;
 				"write" )
-					source "./commands/write.sh" $a1 $a2;;
+					source "./commands/write.sh" $a1 $a2 $3 $2;;
 				* )
 					help_connect
 			esac
