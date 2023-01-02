@@ -1,11 +1,10 @@
 #!/bin/bash
 
-file="./users"
-new_user=$1
-if [[ $(cat $file | grep -c "$new_user") -eq 1 ]]; then
-	#TODO @Gylfirst trouver comment modif le prompt
-	(echo $PS1 | sed -r "s/\\u/$new_user/")
-	echo 'test $PS1'
+machine=$1
+user=$2
+
+if [[ $user == "admin" ]] || [[ $user == "root" ]]; then
+	source rvsh.sh "-admin"
 else
-	echo "User not found"
+	source rvsh.sh "-connect" $1 $2
 fi

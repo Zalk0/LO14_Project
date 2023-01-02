@@ -10,10 +10,7 @@ function syntax {
 	echo -e "Syntax:\n\trsvh -admin\n\trsvh -connect machine_name user_name"
 }
 
-#Je pense qu'il faut faire un help pour rvsh (pour comment on se connecte) et un help pour les autres commandes une fois connecté
-function help {
-	echo -e "HELP for rsvh command\n------------------------"
-	syntax
+function help_connect {
 	echo -e "------------------------\nCommands for -connect"
 	echo "who: allow the user to display all the users connected on the machine, returning username, machine name, date and hour of connection"
 	echo "rusers: allow the user to display the connected users, returning username, machine name, date and hour of connection"
@@ -24,6 +21,13 @@ function help {
 	echo "finger: allow the user to display his informations"
 	echo -e "write: allow the user to send message to another user.\n\tSyntax: write user_name@machine_name message"
 	echo "exit: allow the user to quit the current virtual machine, returning on the precedent, or leaving the network"
+}
+
+#Je pense qu'il faut faire un help pour rvsh (pour comment on se connecte) et un help pour les autres commandes une fois connecté
+function help {
+	echo -e "HELP for rsvh command\n------------------------"
+	syntax
+	help_connect
 	echo -e "------------------------\nCommands for -admin"
 	echo "host: allow the administrator to add or remove a virtual machine in the network"
 	echo "user: allow the administrator to add or remove an user, edit his permitions, and set a password"
@@ -40,14 +44,15 @@ function connection {
 
 function prompt { #$1=mode $2=machine $3=user
 	if [[ $1 == "admin" ]]; then
-		connection $2 $3 
+		connection $2 $3
+		echo ''
 		while [[ true ]]; do
-			read -p $'\n'"$col_green root@hostroot$col_default> " cmd a1 a2 a3
+			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"afinger" )
 					source "./commands/afinger.sh";;
 				"exit" )
-					break;;
+					source "./commands/exit.sh" $3 $2;;
 				"finger" )
 					source "./commands/finger.sh" $3;;
 				"help" )
@@ -63,7 +68,12 @@ function prompt { #$1=mode $2=machine $3=user
 				"rusers" )
 					source "./commands/rusers.sh";;
 				"su" )
-					source "./commands/su.sh";;
+					if [ -z $a1 ] || [ -z $a2 ]; then
+						echo "Enter the user to access and the machine"
+						continue
+					fi
+					source "./commands/su.sh" $a2 $a1
+					;;
 				"user" )
 					source "./commands/user.sh";;
 				"wall" )
@@ -71,22 +81,23 @@ function prompt { #$1=mode $2=machine $3=user
 				"who" )
 					source "./commands/who.sh" $2;;
 				"write" )
-					source "./commands/write.sh" $a1 $a2;;
+					source "./commands/write.sh" $a1 $a2 $3 $2;;
 				* )
 					help
 			esac
 		done
 	elif [[ $1 == "connect" ]]; then
 		connection $2 $3
+		echo ''
 		while [[ true ]]; do
-			read -p $'\n'"$col_green$3@$2$col_default> " cmd a1 a2 a3
+			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"exit" )
 					source "./commands/exit.sh" $3 $2;;
 				"finger" )
 					source "./commands/finger.sh" $3;;
 				"help" )
-					help;;
+					help_connect;;
 				"passwd" )
 					source "./commands/passwd.sh" $3;;
 				"rconnect" )
@@ -96,13 +107,17 @@ function prompt { #$1=mode $2=machine $3=user
 				"rusers" )
 					source "./commands/rusers.sh";;
 				"su" )
-					source "./commands/su.sh";;
+					if [ -z $a1 ]; then
+						echo "Enter the user to access"
+						continue
+					fi
+					source "./commands/su.sh" $2 $a1;;
 				"who" )
 					source "./commands/who.sh" $2;;
 				"write" )
-					source "./commands/write.sh" $a1 $a2;;
+					source "./commands/write.sh" $a1 $a2 $3 $2;;
 				* )
-					help
+					help_connect
 			esac
 		done
 	else
@@ -113,18 +128,18 @@ function prompt { #$1=mode $2=machine $3=user
 
 #Need to add usage of verifications.sh
 
-if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
+if [ $# -eq 1 ] && [ $1 == "-admin" ]; then
 	read -sp "What's the pasword for admin? " admin_passwd
 	admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
 	#echo -e "\nThe hash of the admin password is: $admin_passwd"
-	source verifications.sh 4 $admin_passwd
+	source verifications.sh 3 "root" $admin_passwd
 	case $? in
 		0 )
-			prompt $(echo $1 | cut -f2 -d '-');;
+			prompt $(echo $1 | cut -f2 -d '-') "hostroot" "root";;
 		5 )
 			echo "The password isn't correct"
 	esac
-elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
+elif [ $# -eq 3 ] && [ $1 == "-connect" ]; then
 	source verifications.sh 2 $2 $3
 	case $? in
 		0 )
@@ -147,8 +162,10 @@ elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
 		4 )
 			echo "This user doesn't have access to this machine"
 	esac
-elif [ $# -eq 1 ] && [ "$1" = "-help" ]; then
+elif [ $# -eq 1 ] && [ $1 == "-help" ]; then
 	help
+elif [ $# -eq 1 ] && [ $1 == "rconnect" ]; then
+	: #do nothing
 else
 	syntax
 fi
