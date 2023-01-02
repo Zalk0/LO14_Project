@@ -40,6 +40,18 @@ function connection {
 	date=$(date)
 	terminal=$(tty)
 	echo $1-$2-$date-$terminal >> logs # machine-user-date-terminal
+	mess="./messages"
+	temp="./tempfile"
+	while read ligne
+	do
+		if [[ $(echo $ligne | grep $2) != '' ]]; then
+			message=$(echo $ligne | cut -d ':' -f2)
+			echo "Message from root: $message"
+			sed '/'$user_name'/d' $mess > $temp
+            mv $temp $mess
+            rm -f $temp
+		fi
+	done < $mess
 }
 
 function prompt { #$1=mode $2=machine $3=user
@@ -77,7 +89,7 @@ function prompt { #$1=mode $2=machine $3=user
 				"user" )
 					source "./commands/user.sh";;
 				"wall" )
-					source "./commands/wall.sh";;
+					source "./commands/wall.sh" $a1 $a2;;
 				"who" )
 					source "./commands/who.sh" $2;;
 				"write" )
