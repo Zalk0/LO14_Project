@@ -44,9 +44,9 @@ function connection {
 
 function prompt { #$1=mode $2=machine $3=user
 	if [[ $1 == "admin" ]]; then
-		connection $2 $3 
+		connection $2 $3
 		while [[ true ]]; do
-			read -p $'\n'$col_green"root@hostroot$col_default> " cmd a1 a2 a3
+			read -p $'\n'"$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"afinger" )
 					source "./commands/afinger.sh";;
@@ -121,10 +121,10 @@ if [ $# -eq 1 ] && [ $1 == "-admin" ]; then
 	read -sp "What's the pasword for admin? " admin_passwd
 	admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
 	#echo -e "\nThe hash of the admin password is: $admin_passwd"
-	source verifications.sh 4 $admin_passwd
+	source verifications.sh 3 "root" $admin_passwd
 	case $? in
 		0 )
-			prompt $(echo $1 | cut -f2 -d '-');;
+			prompt $(echo $1 | cut -f2 -d '-') "hostroot" "root";;
 		5 )
 			echo "The password isn't correct"
 	esac
