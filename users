@@ -1,4 +1,4 @@
-user1::machine1,machine6
+user1:6d9010b2b7a1483b256ae7477738dba7c530bd9ba53db1d6691441e74b83608a:machine1,machine6 #pass is user
 user3::machine42,machine6
 user6::machine1,machine32
 user2:lapd:machine4
