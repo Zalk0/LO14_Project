@@ -10,10 +10,7 @@ function syntax {
 	echo -e "Syntax:\n\trsvh -admin\n\trsvh -connect machine_name user_name"
 }
 
-#Je pense qu'il faut faire un help pour rvsh (pour comment on se connecte) et un help pour les autres commandes une fois connecté
-function help {
-	echo -e "HELP for rsvh command\n------------------------"
-	syntax
+function help_connect {
 	echo -e "------------------------\nCommands for -connect"
 	echo "who: allow the user to display all the users connected on the machine, returning username, machine name, date and hour of connection"
 	echo "rusers: allow the user to display the connected users, returning username, machine name, date and hour of connection"
@@ -24,6 +21,13 @@ function help {
 	echo "finger: allow the user to display his informations"
 	echo -e "write: allow the user to send message to another user.\n\tSyntax: write user_name@machine_name message"
 	echo "exit: allow the user to quit the current virtual machine, returning on the precedent, or leaving the network"
+}
+
+#Je pense qu'il faut faire un help pour rvsh (pour comment on se connecte) et un help pour les autres commandes une fois connecté
+function help {
+	echo -e "HELP for rsvh command\n------------------------"
+	syntax
+	help_connect
 	echo -e "------------------------\nCommands for -admin"
 	echo "host: allow the administrator to add or remove a virtual machine in the network"
 	echo "user: allow the administrator to add or remove an user, edit his permitions, and set a password"
@@ -42,7 +46,7 @@ function prompt { #$1=mode $2=machine $3=user
 	if [[ $1 == "admin" ]]; then
 		connection $2 $3 
 		while [[ true ]]; do
-			read -p $'\n'"$col_green root@hostroot$col_default> " cmd a1 a2 a3
+			read -p $'\n'$col_green"root@hostroot$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"afinger" )
 					source "./commands/afinger.sh";;
@@ -63,7 +67,7 @@ function prompt { #$1=mode $2=machine $3=user
 				"rusers" )
 					source "./commands/rusers.sh";;
 				"su" )
-					source "./commands/su.sh";;
+					source "./commands/su.sh" $2 $a1;;
 				"user" )
 					source "./commands/user.sh";;
 				"wall" )
@@ -86,7 +90,7 @@ function prompt { #$1=mode $2=machine $3=user
 				"finger" )
 					source "./commands/finger.sh" $3;;
 				"help" )
-					help;;
+					help_connect;;
 				"passwd" )
 					source "./commands/passwd.sh" $3;;
 				"rconnect" )
@@ -96,13 +100,13 @@ function prompt { #$1=mode $2=machine $3=user
 				"rusers" )
 					source "./commands/rusers.sh";;
 				"su" )
-					source "./commands/su.sh";;
+					source "./commands/su.sh" $2 $a1;;
 				"who" )
 					source "./commands/who.sh" $2;;
 				"write" )
 					source "./commands/write.sh" $a1 $a2;;
 				* )
-					help
+					help_connect
 			esac
 		done
 	else
