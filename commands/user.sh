@@ -31,7 +31,7 @@ case $option in
 	"setpwd" )
 		read -p "What's the new pasword? " password
 		password=$(echo $password | sha256sum | cut -f1 -d ' ')
-		sed -i "s/^$user_name:/$user_name:$password/" $file
+		sed -i "s/^$user_name:.*:/$user_name:$password:/" $file
 		echo "Password has been set correctly";;
 	* )
 		echo "Wrong syntax, reply by 'add', 'remove', 'edit' or 'setpwd'!"
