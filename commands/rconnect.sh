@@ -11,7 +11,7 @@ case $? in
     4 ) 
         echo "You don't have access to $machine";;
     0 )
-        source rvsh.sh
+        source rvsh.sh rconnect
         prompt $mode $machine $user
         # syntax function ?
 esac

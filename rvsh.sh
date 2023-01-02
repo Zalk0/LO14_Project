@@ -47,7 +47,7 @@ function prompt { #$1=mode $2=machine $3=user
 				"afinger" )
 					source "./commands/afinger.sh";;
 				"exit" )
-					break;;
+					source "./commands/exit.sh" $3 $2;;
 				"finger" )
 					source "./commands/finger.sh" $3;;
 				"help" )
@@ -113,7 +113,7 @@ function prompt { #$1=mode $2=machine $3=user
 
 #Need to add usage of verifications.sh
 
-if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
+if [ $# -eq 1 ] && [ $1 == "-admin" ]; then
 	read -sp "What's the pasword for admin? " admin_passwd
 	admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
 	#echo -e "\nThe hash of the admin password is: $admin_passwd"
@@ -124,7 +124,7 @@ if [ $# -eq 1 ] && [ "$1" = "-admin" ]; then
 		5 )
 			echo "The password isn't correct"
 	esac
-elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
+elif [ $# -eq 3 ] && [ $1 == "-connect" ]; then
 	source verifications.sh 2 $2 $3
 	case $? in
 		0 )
@@ -147,8 +147,10 @@ elif [ $# -eq 3 ] && [ "$1" = "-connect" ]; then
 		4 )
 			echo "This user doesn't have access to this machine"
 	esac
-elif [ $# -eq 1 ] && [ "$1" = "-help" ]; then
+elif [ $# -eq 1 ] && [ $1 == "-help" ]; then
 	help
+elif [ $# -eq 1 ] && [ $1 == "rconnect" ]; then
+	: #do nothing
 else
 	syntax
 fi
