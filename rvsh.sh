@@ -45,8 +45,9 @@ function connection {
 function prompt { #$1=mode $2=machine $3=user
 	if [[ $1 == "admin" ]]; then
 		connection $2 $3
+		echo ''
 		while [[ true ]]; do
-			read -p $'\n'"$col_green$3@$2$col_default> " cmd a1 a2 a3
+			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"afinger" )
 					source "./commands/afinger.sh";;
@@ -67,7 +68,12 @@ function prompt { #$1=mode $2=machine $3=user
 				"rusers" )
 					source "./commands/rusers.sh";;
 				"su" )
-					source "./commands/su.sh" $2 $a1;;
+					if [ -z $a1 ] || [ -z $a2 ]; then
+						echo "Enter the user to access and the machine"
+						continue
+					fi
+					source "./commands/su.sh" $a2 $a1
+					;;
 				"user" )
 					source "./commands/user.sh";;
 				"wall" )
@@ -82,8 +88,9 @@ function prompt { #$1=mode $2=machine $3=user
 		done
 	elif [[ $1 == "connect" ]]; then
 		connection $2 $3
+		echo ''
 		while [[ true ]]; do
-			read -p $'\n'"$col_green$3@$2$col_default> " cmd a1 a2 a3
+			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
 				"exit" )
 					source "./commands/exit.sh" $3 $2;;
@@ -100,6 +107,10 @@ function prompt { #$1=mode $2=machine $3=user
 				"rusers" )
 					source "./commands/rusers.sh";;
 				"su" )
+					if [ -z $a1 ]; then
+						echo "Enter the user to access"
+						continue
+					fi
 					source "./commands/su.sh" $2 $a1;;
 				"who" )
 					source "./commands/who.sh" $2;;
