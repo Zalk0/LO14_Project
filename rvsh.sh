@@ -61,83 +61,89 @@ function connection {
 	done < $mess
 }
 
+function prompt_admin { #$1=machine $2=user
+	while [[ true ]]; do
+		read -p "$col_green$2@$1$col_default> " cmd a1 a2 a3
+		case $cmd in
+			"afinger" )
+				source "./commands/afinger.sh";;
+			"exit" )
+				source "./commands/exit.sh" $2 $1;;
+			"finger" )
+				source "./commands/finger.sh" $2;;
+			"help" )
+				help_admin;;
+			"host" )
+				source "./commands/host.sh";;
+			"passwd" )
+				source "./commands/passwd.sh" $2;;
+			"rconnect" )
+				source "./commands/rconnect.sh" "admin" $2 $a1;;
+			"rhost" )
+				source "./commands/rhost.sh";;
+			"rusers" )
+				source "./commands/rusers.sh";;
+			"su" )
+				if [ -z $a1 ] || [ -z $a2 ]; then
+					echo "Enter the user to access and the machine"
+					continue
+				fi
+				source "./commands/su.sh" $a2 $a1;;
+			"user" )
+				source "./commands/user.sh";;
+			"wall" )
+				source "./commands/wall.sh" $a1 $a2;;
+			"who" )
+				source "./commands/who.sh" $1;;
+			"write" )
+				source "./commands/write.sh" $a1 $a2 $2 $1;;
+			* )
+				help_admin
+		esac
+	done
+}
+
+function prompt_connect { #$1=machine $2=user
+	while [[ true ]]; do
+		read -p "$col_green$2@$1$col_default> " cmd a1 a2 a3
+		case $cmd in
+			"exit" )
+				source "./commands/exit.sh" $2 $1;;
+			"finger" )
+				source "./commands/finger.sh" $2;;
+			"help" )
+				help_connect;;
+			"passwd" )
+				source "./commands/passwd.sh" $2;;
+			"rconnect" )
+				source "./commands/rconnect.sh" "connect" $2 $a1;;
+			"rhost" )
+				source "./commands/rhost.sh";;
+			"rusers" )
+				source "./commands/rusers.sh";;
+			"su" )
+				if [ -z $a1 ]; then
+					echo "Enter the user to access"
+					continue
+				fi
+				source "./commands/su.sh" $1 $a1;;
+			"who" )
+				source "./commands/who.sh" $1;;
+			"write" )
+				source "./commands/write.sh" $a1 $a2 $2 $1;;
+			* )
+				help_connect
+		esac
+	done
+}
+
 function prompt { #$1=mode $2=machine $3=user
 	if [[ $1 == "admin" ]]; then
 		connection $2 $3
-		while [[ true ]]; do
-			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
-			case $cmd in
-				"afinger" )
-					source "./commands/afinger.sh";;
-				"exit" )
-					source "./commands/exit.sh" $3 $2;;
-				"finger" )
-					source "./commands/finger.sh" $3;;
-				"help" )
-					help_admin;;
-				"host" )
-					source "./commands/host.sh";;
-				"passwd" )
-					source "./commands/passwd.sh" $3;;
-				"rconnect" )
-					source "./commands/rconnect.sh" $1 $3 $a1;;
-				"rhost" )
-					source "./commands/rhost.sh";;
-				"rusers" )
-					source "./commands/rusers.sh";;
-				"su" )
-					if [ -z $a1 ] || [ -z $a2 ]; then
-						echo "Enter the user to access and the machine"
-						continue
-					fi
-					source "./commands/su.sh" $a2 $a1;;
-				"user" )
-					source "./commands/user.sh";;
-				"wall" )
-					source "./commands/wall.sh" $a1 $a2;;
-				"who" )
-					source "./commands/who.sh" $2;;
-				"write" )
-					source "./commands/write.sh" $a1 $a2 $3 $2;;
-				* )
-					help_admin
-			esac
-		done
+		prompt_admin $2 $3
 	elif [[ $1 == "connect" ]]; then
 		connection $2 $3
-		while [[ true ]]; do
-			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
-			case $cmd in
-				"exit" )
-					source "./commands/exit.sh" $3 $2;;
-				"finger" )
-					source "./commands/finger.sh" $3;;
-				"help" )
-					help_connect;;
-				"passwd" )
-					source "./commands/passwd.sh" $3;;
-				"rconnect" )
-					source "./commands/rconnect.sh" $1 $3 $a1;;
-				"rhost" )
-					source "./commands/rhost.sh";;
-				"rusers" )
-					source "./commands/rusers.sh";;
-				"su" )
-					if [ -z $a1 ]; then
-						echo "Enter the user to access"
-						continue
-					fi
-					source "./commands/su.sh" $2 $a1;;
-				"who" )
-					source "./commands/who.sh" $2;;
-				"write" )
-					source "./commands/write.sh" $a1 $a2 $3 $2;;
-				* )
-					help_connect
-			esac
-		done
-	else
-		echo Syntax incorrect when calling prompt
+		prompt_connect $2 $3
 	fi
 }
 
