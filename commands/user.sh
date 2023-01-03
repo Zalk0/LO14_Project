@@ -45,18 +45,15 @@ case $? in
 						echo "Wrong syntax, reply by 'yes' or 'no'!"
 				esac;;
 			"edit" )
-				read -p "Do you want to add, remove or edit a permission? " choice
+				read -p "Do you want to add or remove the permission to access a machine? " choice
 				read -p "Which machine do you want? " machine_name
 				case ${choice,,} in
 					"add" )
 						add_machine;;
 					"remove" )
-						sed -ri "s/^($user_name:.*:.*)($machine_name,{1}|,{1}$machine_name)(.* #.*)$/\1\3/" $file;;
-					"edit" )
-						# sed -i "^$user_name\b" $file
-						;;
+						sed -ri "s/^($user_name:.*:.*)($machine_name,|,$machine_name)(.* #.*)$/\1\3/" $file;;
 					* )
-						echo "Wrong syntax, reply by 'add', 'remove' or 'edit'!"
+						echo "Wrong syntax, reply by 'add' or 'remove'!"
 				esac;;
 			"setpwd" )
 				setpwd;;
