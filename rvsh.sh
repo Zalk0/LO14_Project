@@ -7,7 +7,7 @@ col_green=$'\e[1;32m'
 col_default=$'\e[0m'
 
 function syntax {
-	echo -e "Syntax:\n\trsvh -admin\n\trsvh -connect machine_name user_name"
+	echo -e "Syntax:\n\trvsh -admin\n\trsvh -connect machine_name user_name"
 }
 
 function help_connect {
@@ -179,7 +179,9 @@ elif [ $# -eq 3 ] && [ $1 == "-connect" ]; then
 		3 )
 			echo "The user doesn't exist";;
 		4 )
-			echo "This user doesn't have access to this machine"
+			echo "This user doesn't have access to this machine";;
+		6 )
+			echo "The user name must only contain miniscule letters and digits"
 	esac
 elif [ $# -eq 1 ] && [ $1 == "-help" ]; then
 	help

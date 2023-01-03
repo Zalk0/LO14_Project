@@ -68,6 +68,7 @@ case $? in
 			read -p "Do you want to add a machine or set a password to $user_name? " choice
 			case ${choice,,} in
 				"add" )
+					read -p "Which machine do you want? " machine_name
 					add_machine;;
 				"setpwd" )
 					setpwd;;

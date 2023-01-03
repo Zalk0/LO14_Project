@@ -21,6 +21,9 @@ function test_machine { #$1=machine
 }
 
 function test_user { #$1=user
+	if [[ $1 =~ [^0-9a-z]+ ]]; then
+		return 6 #The user name contains not allowed characters
+	fi
 	file="./users"
 	compt=0
 	while read -r ligne
@@ -47,9 +50,12 @@ function test_user_access_machine { #$1=machine $2=user
 		return 2 #The machine doesn't exist
 	fi
 	test_user $2
-	if [[ $? != 0 ]]; then
-		return 3 #The user doesn't exist
-	fi
+	case $? in
+		3 )
+			return 3;; #The user doesn't exist
+		6 )
+			return 6;; #The user name contains not allowed characters
+	esac
 	machines=$(sed -n "$ligne"p $file | cut -d ':' -f3)
 	if [[ $(echo $machines | grep $1) == '' ]]; then
 		return 4 #The user doesn't have access to the machine
