@@ -23,10 +23,7 @@ function help_connect {
 	echo "exit: allow the user to quit the current virtual machine, returning on the precedent, or leaving the network"
 }
 
-#Je pense qu'il faut faire un help pour rvsh (pour comment on se connecte) et un help pour les autres commandes une fois connecté
-function help {
-	echo -e "HELP for rsvh command\n------------------------"
-	syntax
+function help_admin {
 	help_connect
 	echo -e "------------------------\nCommands for -admin"
 	echo "host: allow the administrator to add or remove a virtual machine in the network"
@@ -35,7 +32,15 @@ function help {
 	echo "afinger: allow the administrator to edit the informations on a user"
 }
 
+function help {
+	echo -e "HELP for rsvh command\n------------------------"
+	syntax
+	help_admin
+}
+
 function connection {
+	trap "" SIGINT
+	echo ""
 	date=$(date)
 	terminal=$(tty)
 	echo $1-$2-$date-$terminal >> logs # machine-user-date-terminal
@@ -59,7 +64,6 @@ function connection {
 function prompt { #$1=mode $2=machine $3=user
 	if [[ $1 == "admin" ]]; then
 		connection $2 $3
-		echo ''
 		while [[ true ]]; do
 			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
@@ -70,7 +74,7 @@ function prompt { #$1=mode $2=machine $3=user
 				"finger" )
 					source "./commands/finger.sh" $3;;
 				"help" )
-					help;;
+					help_admin;;
 				"host" )
 					source "./commands/host.sh";;
 				"passwd" )
@@ -96,12 +100,11 @@ function prompt { #$1=mode $2=machine $3=user
 				"write" )
 					source "./commands/write.sh" $a1 $a2 $3 $2;;
 				* )
-					help
+					help_admin
 			esac
 		done
 	elif [[ $1 == "connect" ]]; then
 		connection $2 $3
-		echo ''
 		while [[ true ]]; do
 			read -p "$col_green$3@$2$col_default> " cmd a1 a2 a3
 			case $cmd in
@@ -137,9 +140,6 @@ function prompt { #$1=mode $2=machine $3=user
 		echo Syntax incorrect when calling prompt
 	fi
 }
-
-
-#Need to add usage of verifications.sh
 
 if [ $# -eq 1 ] && [ $1 == "-admin" ]; then
 	read -sp "What's the pasword for admin? " admin_passwd
