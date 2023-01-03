@@ -20,33 +20,44 @@ function add_machine {
 }
 
 file="./users"
-cat $file
 echo "Reply by 'add', 'remove', 'edit' or 'setpwd'"
 read -p "Do you want to remove, add, edit or set a password to an user? " option
-read -p "What's the user name? " user_name
+if [[ ! (${option,,} == "add" || ${option,,} == "remove" || ${option,,} == "edit" || ${option,,} == "setpwd") ]]; then
+	echo "Wrong syntax, reply by 'add', 'remove', 'edit' or 'setpwd'!"
+	return
+fi
 
+read -p "What's the user name? " user_name
 source verifications.sh 1 $user_name
 case $? in
 	0 )
-		case $option in
+		case ${option,,} in
 			"remove" )
-				sed -i "/^$user_name\b/d" $file;;
+				read -p "Are you sure you want to delete $user_name, this action is irreversible!" choice
+				case ${choice,,} in
+					"yes" )
+						sed -i "/^$user_name\b/d" $file
+						echo "User $user_name deleted";;
+					"no" )
+						echo "You have cancelled"
+						:;;
+					* )
+						echo "Wrong syntax, reply by 'yes' or 'no'!"
+				esac;;
 			"edit" )
 				read -p "Do you want to add, remove or edit a permission? " choice
 				read -p "Which machine do you want? " machine_name
-				case $choice in
+				case ${choice,,} in
 					"add" )
 						add_machine;;
 					"remove" )
-						# sed -i "" $file
-						;;
+						sed -ri "s/^($user_name:.*:.*)($machine_name,{1}|,{1}$machine_name)(.* #.*)$/\1\3/" $file;;
 					"edit" )
 						# sed -i "^$user_name\b" $file
 						;;
 					* )
 						echo "Wrong syntax, reply by 'add', 'remove' or 'edit'!"
 				esac;;
-				#TODO faire les edit de permisisons (modifier peut etre le setpwd)
 			"setpwd" )
 				setpwd;;
 			"add" )
@@ -55,21 +66,20 @@ case $? in
 				echo "Wrong syntax, reply by 'add', 'remove', 'edit' or 'setpwd'!"
 		esac;;
 	3 )
-		if [[ $option == "add" ]]; then
+		if [[ ${option,,} == "add" ]]; then
 			echo "$user_name::" >> $file
-			read -p "Do you want to add a machine or set a password to $user_name? " option
-			case $option in
+			read -p "Do you want to add a machine or set a password to $user_name? " choice
+			case ${choice,,} in
 				"add" )
 					add_machine;;
 				"setpwd" )
 					setpwd;;
+				"no" )
+					:;;
 				* )
-					echo "Wrong syntax, reply by 'add', 'remove' or 'edit'!"
+					echo "Wrong syntax, reply by 'add', 'setpwd' or 'no'!"
 			esac
 		else
 			echo "The user $user_name doesn't exist"
 		fi
 esac
-
-echo "New file:"
-cat $file

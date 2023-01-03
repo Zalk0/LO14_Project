@@ -36,11 +36,13 @@ function help {
 }
 
 function connection {
-	file="./logs"
 	date=$(date)
 	terminal=$(tty)
 	echo $1-$2-$date-$terminal >> logs # machine-user-date-terminal
 	mess="./messages"
+	if [[ ! -f $mess ]]; then
+		return
+	fi
 	temp="./tempfile"
 	while read ligne
 	do
@@ -84,8 +86,7 @@ function prompt { #$1=mode $2=machine $3=user
 						echo "Enter the user to access and the machine"
 						continue
 					fi
-					source "./commands/su.sh" $a2 $a1
-					;;
+					source "./commands/su.sh" $a2 $a1;;
 				"user" )
 					source "./commands/user.sh";;
 				"wall" )
