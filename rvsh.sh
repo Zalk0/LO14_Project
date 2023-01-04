@@ -40,7 +40,10 @@ function help {
 
 function connection {
 	trap "" SIGINT
-	echo ""
+	if [[ ! -f ./logs ]]; then
+		echo ""
+	fi
+	echo "Welcome to $1"
 	date=$(date)
 	terminal=$(tty)
 	echo $1-$2-$date-$terminal >> logs # machine-user-date-terminal
@@ -154,7 +157,7 @@ if [ $# -eq 1 ] && [ $1 == "-admin" ]; then
 	source verifications.sh 3 "root" $admin_passwd
 	case $? in
 		0 )
-			prompt $(echo $1 | cut -f2 -d '-') "hostroot" "root";;
+			prompt "admin" "hostroot" "root";;
 		5 )
 			echo "The password isn't correct"
 	esac
@@ -172,8 +175,6 @@ elif [ $# -eq 3 ] && [ $1 == "-connect" ]; then
 				5)
 					echo "The password isn't correct"
 			esac;;
-		1 )
-			echo "Incorrect number of args when calling verifications!";;
 		2 )
 			echo "The machine doesn't exist";;
 		3 )

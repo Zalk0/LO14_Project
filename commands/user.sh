@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function setpwd {
-	read -p "What's the new pasword? " password
+	read -sp "What's the new pasword? " password
 	password=$(echo $password | sha256sum | cut -f1 -d ' ')
 	sed -i "s/^$user_name:.*:/$user_name:$password:/" $file
 	echo "Password has been set correctly"
@@ -11,11 +11,14 @@ function add_machine {
 	source verifications.sh 2 $machine_name $user_name
 	case $? in
 		0 )
-			echo "The user $user_name already has acces to the machine $machine_name";;
+			echo "The user $user_name already has acces to the machine $machine_name"
+			return 0;;
 		2 )
-			echo "The machine $machine_name doesn't exist";;
+			echo "The machine $machine_name doesn't exist"
+			return 1;;
 		4 )
-			sed -ri "s/^($user_name:.*:.*) (#.*)$/\1,$machine_name \2/" $file
+			sed -ri "s/^($user_name:.*:.*) (#.*)$/\1,$machine_name \2/;s/:,$machine_name/:$machine_name/" $file
+			return 0
 	esac
 }
 
@@ -33,28 +36,50 @@ case $? in
 	0 )
 		case ${option,,} in
 			"remove" )
-				read -p "Are you sure you want to delete $user_name, this action is irreversible!" choice
-				case ${choice,,} in
-					"yes" )
-						sed -i "/^$user_name\b/d" $file
-						echo "User $user_name deleted";;
-					"no" )
-						echo "You have cancelled"
-						:;;
-					* )
-						echo "Wrong syntax, reply by 'yes' or 'no'!"
-				esac;;
+				while [[ true ]]; do
+					read -p "Are you sure you want to delete $user_name, this action is irreversible!" choice
+					case ${choice,,} in
+						"yes" )
+							sed -i "/^$user_name\b/d" $file
+							echo "User $user_name deleted"
+							break;;
+						"no" )
+							echo "You have cancelled"
+							break;;
+						* )
+							echo "Wrong syntax, reply by 'yes' or 'no'!"
+					esac
+				done;;
 			"edit" )
-				read -p "Do you want to add or remove the permission to access a machine? " choice
-				read -p "Which machine do you want? " machine_name
-				case ${choice,,} in
-					"add" )
-						add_machine;;
-					"remove" )
-						sed -ri "s/^($user_name:.*:.*)($machine_name,|,$machine_name)(.* #.*)$/\1\3/" $file;;
-					* )
-						echo "Wrong syntax, reply by 'add' or 'remove'!"
-				esac;;
+				while [[ true ]]; do
+					read -p "Do you want to add or remove the permission to access a machine? " choice
+					read -p "Which machine do you want? " machine_name
+					case ${choice,,} in
+						"add" )
+							add_machine
+							case $? in
+								0 )
+									break;;
+								1 )
+									:
+							esac;;
+						"remove" )
+							source verifications.sh 2 $machine_name $user_name
+							case $? in
+								0 )
+									sed -ri "s/^($user_name:.*:.*)($machine_name,|,$machine_name)(.* \{0,1\}#\{0,1\}.*)$/\1\3/;T a;:a s/^($user_name:.*:.*)$machine_name(.* \{0,1\}#\{0,1\}.*)$/\1\2/" $file
+									echo "The user no longer has access to $machine_name"
+									break;;
+								2 )
+									echo "The machine $machine_name doesn't exist";;
+								4 ) 
+									echo "The user doesn't have access to $machine_name"
+									break
+							esac;;
+						* )
+							echo "Wrong syntax, reply by 'add' or 'remove'!"
+					esac
+				done;;
 			"setpwd" )
 				setpwd;;
 			"add" )
@@ -65,19 +90,30 @@ case $? in
 	3 )
 		if [[ ${option,,} == "add" ]]; then
 			echo "$user_name::" >> $file
-			read -p "Do you want to add a machine or set a password to $user_name? " choice
-			case ${choice,,} in
-				"add" )
-					read -p "Which machine do you want? " machine_name
-					add_machine;;
-				"setpwd" )
-					setpwd;;
-				"no" )
-					:;;
-				* )
-					echo "Wrong syntax, reply by 'add', 'setpwd' or 'no'!"
-			esac
+			while [[ true ]]; do
+				read -p "Do you want to add a machine or set a password to $user_name? " choice
+				case ${choice,,} in
+					"add" )
+						read -p "Which machine do you want? " machine_name
+						add_machine
+						case $? in
+							0 )
+								break;;
+							1 )
+								:
+						esac;;
+					"setpwd" )
+						setpwd
+						break;;
+					"no" )
+						break;;
+					* )
+						echo "Wrong syntax, reply by 'add', 'setpwd' or 'no'!"
+				esac
+			done
 		else
 			echo "The user $user_name doesn't exist"
-		fi
+		fi;;
+	6 )
+		echo "The user name must only contain miniscule letters and digits"
 esac

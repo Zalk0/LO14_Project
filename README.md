@@ -34,3 +34,4 @@ These will be the numbers returned by functions to indicate if it's ok or not.
 **3** The user doesn't exist  
 **4** The user doesn't have access to the machine  
 **5** The password isn't correct  
+**6** The username isn't only composed of miniscules and digits

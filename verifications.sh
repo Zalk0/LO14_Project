@@ -75,6 +75,7 @@ function test_pwd { #$1=user $2=password
 #First arg is a number calling the test associated
 
 if [[ ($# < 2) || ($# > 3) ]]; then
+	echo "Incorrect number of args when calling verifications"
 	return 1
 fi
 case $1 in
