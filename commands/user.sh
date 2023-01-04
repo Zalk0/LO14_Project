@@ -41,6 +41,7 @@ case $? in
 					case ${choice,,} in
 						"yes" )
 							sed -i "/^$user_name\b/d" $file
+							sed -i "/^$user_name\b/d" "./finger"
 							echo "User $user_name deleted"
 							break;;
 						"no" )
@@ -90,6 +91,7 @@ case $? in
 	3 )
 		if [[ ${option,,} == "add" ]]; then
 			echo "$user_name::" >> $file
+			echo "$user_name info: " >> "./finger"
 			while [[ true ]]; do
 				read -p "Do you want to add a machine or set a password to $user_name? " choice
 				case ${choice,,} in
