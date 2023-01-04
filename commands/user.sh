@@ -3,7 +3,7 @@
 function setpwd {
 	read -sp "What's the new pasword? " password
 	password=$(echo $password | sha256sum | cut -f1 -d ' ')
-	sed -i "s/^$user_name:.*:/$user_name:$password:/" $file
+	sed -ri "s/^($user_name:).*:/\1$password:/" $file
 	echo "Password has been set correctly"
 }
 
@@ -17,7 +17,7 @@ function add_machine {
 			echo "The machine $machine_name doesn't exist"
 			return 1;;
 		4 )
-			sed -ri "s/^($user_name:.*:.*) (#.*)$/\1,$machine_name \2/;s/:,$machine_name/:$machine_name/" $file
+			sed -ri "s/^($user_name:.*:.*)( #.*|)$/\1,$machine_name\2/;s/:,/:/" $file
 			return 0
 	esac
 }
@@ -67,7 +67,7 @@ case $? in
 							source verifications.sh 2 $machine_name $user_name
 							case $? in
 								0 )
-									sed -ri "s/^($user_name:.*:.*)($machine_name,|,$machine_name)(.* \{0,1\}#\{0,1\}.*)$/\1\3/;T a;:a s/^($user_name:.*:.*)$machine_name(.* \{0,1\}#\{0,1\}.*)$/\1\2/" $file
+									sed -ri "s/^($user_name:.*:.*)$machine_name/\1/;s/(:|,),/\1/;s/,( )/\1/" $file
 									echo "The user no longer has access to $machine_name"
 									break;;
 								2 )
