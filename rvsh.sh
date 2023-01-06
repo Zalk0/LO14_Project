@@ -51,10 +51,10 @@ function connection {
 	temp="./tempfile"
 	while read ligne
 	do
-		if [[ $(echo $ligne | grep $2) != '' ]]; then
+		if [[ $(echo $ligne | grep "$2:") != '' ]]; then
 			message=$(echo $ligne | cut -d ':' -f2)
 			echo "Message from root: $message"
-			sed '/'$user_name'/d' $mess > $temp
+			sed '/'$2':/d' $mess > $temp
             mv $temp $mess
             rm -f $temp
 		fi
@@ -92,7 +92,12 @@ function prompt_admin { #$1=machine $2=user
 			"user" )
 				source "./commands/user.sh";;
 			"wall" )
-				source "./commands/wall.sh" $2 $1 $a1 $a2;;
+				if [[ $a1 == '-n' ]]; then
+					arg='n'
+					source "./commands/wall.sh" $2 $1 $arg $a2
+				else
+					source "./commands/wall.sh" $2 $1 $a1 $a2
+				fi;;
 			"who" )
 				source "./commands/who.sh" $1;;
 			"write" )
