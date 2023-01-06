@@ -12,4 +12,7 @@ if [[ ! -s $file ]]; then
 	rm -f $file
 	trap - SIGINT
 fi
+if [[ ! -s messages ]]; then
+	rm -f messages
+fi
 break
