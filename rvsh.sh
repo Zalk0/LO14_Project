@@ -92,7 +92,7 @@ function prompt_admin { #$1=machine $2=user
 			"user" )
 				source "./commands/user.sh";;
 			"wall" )
-				source "./commands/wall.sh" $a1 $a2;;
+				source "./commands/wall.sh" $2 $1 $a1 $a2;;
 			"who" )
 				source "./commands/who.sh" $1;;
 			"write" )
