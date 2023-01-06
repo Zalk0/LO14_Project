@@ -11,7 +11,6 @@ do
 		compt=1
 	fi
 done < $file
-#TODO @Gylfirst - @zalk0 Il faut maintenant ajouter/réécrire les infos avec un read et à la bonne position
 
 if [[ $compt -eq 1 ]]; then
 	read -p "Do you want to add or edit informations? " choise

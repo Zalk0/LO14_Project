@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#TODO @Zalk0 - @Gylfirst
-#Gonna use source to call functions
-
 col_green=$'\e[1;32m'
 col_default=$'\e[0m'
 
@@ -153,7 +150,6 @@ function prompt { #$1=mode $2=machine $3=user
 if [ $# -eq 1 ] && [ $1 == "-admin" ]; then
 	read -sp "What's the pasword for admin? " admin_passwd
 	admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
-	#echo -e "\nThe hash of the admin password is: $admin_passwd"
 	source verifications.sh 3 "root" $admin_passwd
 	case $? in
 		0 )
@@ -167,7 +163,6 @@ elif [ $# -eq 3 ] && [ $1 == "-connect" ]; then
 		0 )
 			read -sp "What's your password $3? " user_passwd
 			user_passwd=$(echo $user_passwd | sha256sum | cut -f1 -d ' ')
-			#echo -e "\nThe hash of your password is: $user_passwd"
 			source verifications.sh 3 $3 $user_passwd
 			case $? in
 				0 )

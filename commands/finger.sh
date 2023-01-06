@@ -11,6 +11,6 @@ do
 		break
 	fi
 done < $file
-if [[ $compt -ne 1 ]]; then
+if [[ $compt -ne 1 ]]; then # if the user is created manually in the users file
 	echo "The user $user_name is not registered."
 fi

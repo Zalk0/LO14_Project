@@ -2,7 +2,7 @@
 
 if [[ $(echo $1 | grep '^-n$') == '' ]]; then
     # write message for all onlines
-    message=$1+$2
+    message=$1+${@:2}
     log="./logs"
     while read ligne
     do
@@ -11,7 +11,7 @@ if [[ $(echo $1 | grep '^-n$') == '' ]]; then
     done < $log
 elif [[ $(echo $1 | grep '^-n$') == '-n' ]]; then
     # save message for offlines
-        message=$2
+        message=${@:2}
         file="./messages"
         log="./logs"
         users="./users"
