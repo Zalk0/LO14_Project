@@ -66,7 +66,7 @@ function connection {
 
 function prompt_admin { #$1=machine $2=user
 	while [[ true ]]; do
-		read -p "$col_green$2@$1$col_default> " cmd a1 a2 a3
+		read -p "$col_green$2@$1$col_default> " cmd a1 a2
 		case $cmd in
 			"afinger" )
 				source "./commands/afinger.sh";;
@@ -99,7 +99,7 @@ function prompt_admin { #$1=machine $2=user
 			"who" )
 				source "./commands/who.sh" $1;;
 			"write" )
-				source "./commands/write.sh" $a1 $a2 $2 $1;;
+				source "./commands/write.sh" $2 $1 $a1 $a2;;
 			* )
 				help_admin
 		esac
@@ -108,7 +108,7 @@ function prompt_admin { #$1=machine $2=user
 
 function prompt_connect { #$1=machine $2=user
 	while [[ true ]]; do
-		read -p "$col_green$2@$1$col_default> " cmd a1 a2 a3
+		read -p "$col_green$2@$1$col_default> " cmd a1 a2
 		case $cmd in
 			"exit" )
 				source "./commands/exit.sh" $2 $1;;
@@ -133,7 +133,7 @@ function prompt_connect { #$1=machine $2=user
 			"who" )
 				source "./commands/who.sh" $1;;
 			"write" )
-				source "./commands/write.sh" $a1 $a2 $2 $1;;
+				source "./commands/write.sh" $2 $1 $a1 $a2;;
 			* )
 				help_connect
 		esac

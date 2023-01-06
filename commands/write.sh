@@ -3,14 +3,14 @@
 col_green=$'\e[1;32m'
 col_default=$'\e[0m'
 
-if [[ $# -eq 4 ]]; then
-    names=$1
-    message=$2
-    from_user=$3
-    from_machine=$4
+if [[ $# -ge 4 ]]; then
+    names=$3
+    message=${@:4}
+    from_user=$1
+    from_machine=$2
     file="./messages"
     log="./logs"
-    
+
     if [[ $(echo $names | grep '@') == '' ]]; then
         echo "Wrong syntax"
         return
