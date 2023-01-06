@@ -37,9 +37,7 @@ function help {
 
 function connection {
 	trap "" SIGINT
-	if [[ ! -f ./logs ]]; then
-		echo ""
-	fi
+	echo ""
 	echo "Welcome to $1"
 	date=$(date)
 	terminal=$(tty)
