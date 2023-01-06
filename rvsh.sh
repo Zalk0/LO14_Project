@@ -50,7 +50,7 @@ function connection {
 	while read ligne
 	do
 		if [[ $(echo $ligne | grep "$2:") != '' ]]; then
-			message=$(echo $ligne | cut -d ':' -f2)
+			message=$(echo $ligne | cut -d ':' -f2-)
 			echo "Message from root: $message"
 			sed '/'$2':/d' $mess > $temp
             mv $temp $mess

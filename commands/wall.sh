@@ -32,7 +32,6 @@ elif [[ $(echo $3 | grep '^n$') == 'n' ]]; then
         user_name=$(echo $ligne | cut -d ':' -f1)
         echo $user_name:$message >> $file
     done < $users
-    echo "done for offline"
     while read ligne
     do
         ttyrec=$(echo $ligne | cut -d '-' -f4)
