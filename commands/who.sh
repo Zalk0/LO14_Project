@@ -2,4 +2,4 @@
 
 file="./logs"
 echo "Connected users on $1:"
-sed -n "/^$1/p" $file
+sed -n "/^$1/p" $file | cut -d '-' -f2-
