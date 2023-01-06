@@ -6,6 +6,12 @@ col_default=$'\e[0m'
 user_name=$1
 machine_name=$2
 
+function is_not_root {
+    if [[ $user_name != 'root' ]]; then
+        echo -n "$col_green$user_name@$machine_name$col_default> " > $ttyrec
+    fi
+}
+
 if [[ $(echo $3 | grep '^n$') == '' ]]; then
     # write message for all onlines
     message=${@:3}
@@ -16,9 +22,7 @@ if [[ $(echo $3 | grep '^n$') == '' ]]; then
         user_name=$(echo $ligne | cut -d '-' -f2)
         machine_name=$(echo $ligne | cut -d '-' -f1)
         echo -e "\nMessage from root: $message" > $ttyrec
-        if [[ $user_name != 'root' ]];then
-            echo -n "$col_green$user_name@$machine_name$col_default> " > $ttyrec
-        fi
+        is_not_root
     done < $log
 elif [[ $(echo $3 | grep '^n$') == 'n' ]]; then
     # save message for offlines
@@ -41,9 +45,7 @@ elif [[ $(echo $3 | grep '^n$') == 'n' ]]; then
         mv $temp $file
         rm -f $temp
         echo -e "\nMessage from root: $message" > $ttyrec
-        if [[ $user_name != 'root' ]];then
-            echo -n "$col_green$user_name@$machine_name$col_default> " > $ttyrec
-        fi
+        is_not_root
     done < $log
 else
     echo "Wrong syntax"
