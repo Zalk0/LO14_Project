@@ -93,11 +93,9 @@ function prompt_admin { #$1=machine $2=user
 				source "./commands/user.sh";;
 			"wall" )
 				if [[ $a1 == '-n' ]]; then
-					arg='n'
-					source "./commands/wall.sh" $2 $1 $arg $a2
-				else
-					source "./commands/wall.sh" $2 $1 $a1 $a2
-				fi;;
+					a1='n'
+				fi
+				source "./commands/wall.sh" $2 $1 $a1 $a2;;
 			"who" )
 				source "./commands/who.sh" $1;;
 			"write" )
