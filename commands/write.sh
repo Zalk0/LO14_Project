@@ -19,6 +19,18 @@ if [[ $# -ge 4 ]]; then
     user_name=$(echo $names | cut -d'@' -f1)
     machine_name=$(echo $names | cut -d'@' -f2)
 
+    source verifications.sh 0 $machine_name
+    if [[ $? == 6 ]]; then
+        echo "The machine name must only contain miniscule letters and digits"
+        return
+    fi
+    source verifications.sh 1 $user_name
+    if [[ $? == 6 ]]; then
+        echo "The user name must only contain miniscule letters and digits"
+        return
+    fi
+
+    compt=0
     while read ligne
     do
         if [[ $(echo $ligne | grep "$machine_name-$user_name") != '' ]]; then

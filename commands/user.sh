@@ -18,7 +18,10 @@ function add_machine {
 			return 1;;
 		4 )
 			sed -ri "s/^($user_name:.*:.*)( #.*|)$/\1,$machine_name\2/;s/:,/:/" $file
-			return 0
+			return 0;;
+		6 )
+			echo "The machine name must only contain miniscule letters and digits"
+			return 1
 	esac
 }
 
@@ -55,6 +58,11 @@ case $? in
 				while [[ true ]]; do
 					read -p "Do you want to add or remove the permission to access a machine? " choice
 					read -p "Which machine do you want? " machine_name
+					source verifications.sh 0 $machine_name
+					if [[ $? == 6 ]]; then
+						echo "The machine name must only contain miniscule letters and digits"
+						continue
+					fi
 					case ${choice,,} in
 						"add" )
 							add_machine

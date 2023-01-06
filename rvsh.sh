@@ -178,7 +178,7 @@ elif [ $# -eq 3 ] && [ $1 == "-connect" ]; then
 		4 )
 			echo "This user doesn't have access to this machine";;
 		6 )
-			echo "The user name must only contain miniscule letters and digits"
+			echo "The user name and machine name must only contain miniscule letters and digits"
 	esac
 elif [ $# -eq 1 ] && [ $1 == "-help" ]; then
 	help

@@ -12,7 +12,9 @@ case $user in
                 source rvsh.sh rconnect
                 prompt "connect" $machine $user;;
             2 )
-                echo "$machine doesn't exist"
+                echo "$machine doesn't exist";;
+            6 )
+                echo "The machine name must only contain miniscule letters and digits"
         esac;;
     * )
         source verifications.sh 2 $machine $user
@@ -23,6 +25,8 @@ case $user in
             2 )
                 echo "$machine doesn't exist";;
             4 ) 
-                echo "You don't have access to $machine"
+                echo "You don't have access to $machine";;
+            6 )
+                echo "The machine name must only contain miniscule letters and digits"
         esac
 esac
