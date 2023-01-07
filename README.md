@@ -1,10 +1,11 @@
 # LO14_Project
 
 Project of a virtual machines network (with the virtual machines being files) and creation of commands usable when connected to a machine.
+The project is as we sent it to the teacher, we won't touch it anymore (hence the archived mod)
 
 ## List of Commands
 
-Here is a list of commands, which you can also display in a detailled version with the following command in the script.
+You can have the list of command by calling the script with the help option:
 
 > rsvh -help
 
@@ -26,7 +27,7 @@ Use this command:
 
 ## Error codes
 
-These will be the numbers returned by functions to indicate if it's ok or not.
+These will be the numbers returned by functions (from verfications.sh) to indicate if it's ok or not.
 
 **0** No error  
 **1** Invalid number of arguments or invalid arguments  
