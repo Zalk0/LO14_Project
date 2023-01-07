@@ -61,7 +61,7 @@ function connection {
 
 function prompt_admin { #$1=machine $2=user
 	while [[ true ]]; do
-		read -p "$col_green$2@$1$col_default> " cmd a1 a2
+		read -ep "$col_green$2@$1$col_default> " cmd a1 a2
 		case $cmd in
 			"afinger" )
 				source "./commands/afinger.sh";;
@@ -106,7 +106,7 @@ function prompt_admin { #$1=machine $2=user
 
 function prompt_connect { #$1=machine $2=user
 	while [[ true ]]; do
-		read -p "$col_green$2@$1$col_default> " cmd a1 a2
+		read -ep "$col_green$2@$1$col_default> " cmd a1 a2
 		case $cmd in
 			"exit" )
 				source "./commands/exit.sh" $2 $1;;
@@ -149,7 +149,7 @@ function prompt { #$1=mode $2=machine $3=user
 }
 
 if [ $# -eq 1 ] && [ $1 == "-admin" ]; then
-	read -sp "What's the pasword for admin? " admin_passwd
+	read -esp "What's the pasword for admin? " admin_passwd
 	admin_passwd=$(echo $admin_passwd | sha256sum | cut -f1 -d ' ')
 	source verifications.sh 3 "root" $admin_passwd
 	case $? in
@@ -162,7 +162,7 @@ elif [ $# -eq 3 ] && [ $1 == "-connect" ]; then
 	source verifications.sh 2 $2 $3
 	case $? in
 		0 )
-			read -sp "What's your password $3? " user_passwd
+			read -esp "What's your password $3? " user_passwd
 			user_passwd=$(echo $user_passwd | sha256sum | cut -f1 -d ' ')
 			source verifications.sh 3 $3 $user_passwd
 			case $? in
