@@ -1,7 +1,8 @@
 # LO14_Project
 
-Project of a virtual machines network (with the virtual machines being files) and creation of commands usable when connected to a machine.
-The project is as we sent it to the teacher, we won't touch it anymore (hence the archived mod)
+Project of a virtual machines network (with the virtual machines being files) and creation of commands usable when connected to a machine.  
+The project is as we sent it to the teacher, we won't touch it anymore.  
+If you want to run it, go to the folder where rvsh.sh script is located as all paths are relative.
 
 ## List of Commands
 
